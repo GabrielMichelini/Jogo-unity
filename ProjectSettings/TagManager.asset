@@ -6,6 +6,7 @@ TagManager:
   tags:
   - colector
   - ponto
+  - Enemy
   layers:
   - Default
   - TransparentFX
