@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
+using UnityEngine.UI; 
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -12,9 +13,14 @@ public class PlayerHealth : MonoBehaviour
     public float knockbackForceX = 5f;
     public float knockbackForceY = 5f;
 
+    [Header("UI da Vida")]
+    public Image[] hearts;
+    public Sprite fullHeart;
+
     void Start()
     {
         currentHealth = maxHealth;
+        UpdateHealthUI();
     }
 
     public void TakeDamage(int damageAmount, Transform attacker)
@@ -22,7 +28,17 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damageAmount;
         Debug.Log("Jogador tomou dano! Vida atual: " + currentHealth);
 
-        int direction = (transform.position.x > attacker.position.x) ? 1 : -1;
+        UpdateHealthUI();
+
+        int direction;
+        if (transform.position.x < attacker.position.x)
+        {
+            direction = -1;
+        }
+        else
+        {
+            direction = 1;
+        }
 
         rb.linearVelocity = Vector2.zero;
         rb.AddForce(new Vector2(knockbackForceX * direction, knockbackForceY), ForceMode2D.Impulse);
@@ -42,5 +58,21 @@ public class PlayerHealth : MonoBehaviour
     void RestartScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    void UpdateHealthUI()
+    {
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if (i < currentHealth)
+            {
+                hearts[i].sprite = fullHeart;
+                hearts[i].enabled = true;
+            }
+            else
+            {
+                hearts[i].enabled = false;
+            }
+        }
     }
 }

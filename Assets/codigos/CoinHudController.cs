@@ -11,7 +11,7 @@ public class CoinHudController : MonoBehaviour
     {
         if (textoMoedas != null)
         {
-            textoMoedas.text = "Moedas: " + quantidade;
+            textoMoedas.text = " = " + quantidade;
         }
     }
 }
