@@ -12,7 +12,6 @@ public class EnemyPatrol : MonoBehaviour
 
     [Header("Combate")]
     public int damage = 1;
-    public float bounceForce = 7f;
 
     private int currentPointIndex = 0; 
     private bool isFacingRight = true; 
@@ -59,26 +58,10 @@ public class EnemyPatrol : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            ContactPoint2D contact = collision.contacts[0];
-
-            if (contact.normal.y > 0.7f)
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
             {
-                Die();
-
-                Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
-                if (playerRb != null)
-                {
-                    playerRb.linearVelocity = new Vector2(playerRb.linearVelocity.x, 0); 
-                    playerRb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
-                }
-            }
-            else
-            {
-                PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(damage);
-                }
+                playerHealth.TakeDamage(damage, this.transform);
             }
         }
     }
