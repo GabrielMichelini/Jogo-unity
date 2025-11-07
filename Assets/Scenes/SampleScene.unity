@@ -1063,9 +1063,10 @@ MonoBehaviour:
   rb: {fileID: 1028194072}
   spriteRenderer: {fileID: 1028194068}
   patrolPoints:
-  - {fileID: 2085552040}
   - {fileID: 2017650323}
+  - {fileID: 2085552040}
   moveSpeed: 2
+  damage: 1
 --- !u!58 &1028194071
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1316,9 +1317,10 @@ GameObject:
   - component: {fileID: 1376754549}
   - component: {fileID: 1376754550}
   - component: {fileID: 1376754551}
+  - component: {fileID: 1376754552}
   m_Layer: 0
   m_Name: personagem
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1643,6 +1645,20 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &1376754552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1376754543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32272d5529845f54eafe336dab4f3f55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 3
+  currentHealth: 0
 --- !u!1001 &1425252572
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2205,7 +2221,7 @@ Transform:
   m_GameObject: {fileID: 2017650322}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.7, y: -4.54, z: 0}
+  m_LocalPosition: {x: 5.19, y: -4.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2236,7 +2252,7 @@ Transform:
   m_GameObject: {fileID: 2085552039}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.69, y: -4.38, z: 0}
+  m_LocalPosition: {x: -16.18, y: -4.29, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
