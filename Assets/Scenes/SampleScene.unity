@@ -1791,13 +1791,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32272d5529845f54eafe336dab4f3f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 8
+  maxHealth: 3
   currentHealth: 0
   rb: {fileID: 1376754549}
   knockbackForceX: 11
   knockbackForceY: 4
-  hearts: []
-  fullHeart: {fileID: 0}
+  hearts:
+  - {fileID: 177972750}
+  - {fileID: 1598384888}
+  - {fileID: 1229604966}
+  fullHeart: {fileID: -1036619366682988694, guid: f29d9c6545d492949913a6899ba6f023, type: 3}
 --- !u!114 &1376754553
 MonoBehaviour:
   m_ObjectHideFlags: 0
