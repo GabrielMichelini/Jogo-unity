@@ -59,6 +59,24 @@ public class PlayerHealth : MonoBehaviour
         uiManager.ShowGameOver();
     }
 
+    public bool Heal(int healAmount)
+    {
+        if (currentHealth >= maxHealth)
+        {
+            return false;
+        }
+
+        currentHealth += healAmount;
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+
+        UpdateHealthUI();
+        return true;
+    }
+
     void RestartScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

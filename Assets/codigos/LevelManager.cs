@@ -5,6 +5,9 @@ public class LevelManager : MonoBehaviour
     [Header("Configuração da Vitória")]
     public Transform victoryArea; 
 
+    [Header("UI")]
+    public CoinHudController coinHud;
+
     private int totalCoinsInLevel;
     private int coinsCollected = 0;
     private GameObject player;
@@ -12,17 +15,18 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<PlayerHealth>().gameObject;
-
-        
         totalCoinsInLevel = GameObject.FindGameObjectsWithTag("colector").Length;
-
         Debug.Log("Este nível tem " + totalCoinsInLevel + " moedas.");
+
+        coinHud.AtualizarContagem(0, totalCoinsInLevel);
     }
 
     public void OnCoinCollected()
     {
         coinsCollected++;
         Debug.Log("Moedas coletadas: " + coinsCollected);
+
+        coinHud.AtualizarContagem(coinsCollected, totalCoinsInLevel);
 
         if (coinsCollected >= totalCoinsInLevel)
         {

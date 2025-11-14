@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6654518037422842748}
   - component: {fileID: 1183001291110902362}
   - component: {fileID: 2121271979676142129}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: inimigo
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -154,8 +154,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.135
+  m_Offset: {x: 0, y: 0.01}
+  m_Radius: 0.09
 --- !u!114 &2121271979676142129
 MonoBehaviour:
   m_ObjectHideFlags: 0
