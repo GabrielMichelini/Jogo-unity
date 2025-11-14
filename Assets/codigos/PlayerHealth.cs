@@ -17,6 +17,9 @@ public class PlayerHealth : MonoBehaviour
     public Image[] hearts;
     public Sprite fullHeart;
 
+    [Header("Managers")]
+    public UIManager uiManager;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -49,10 +52,11 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void Die()
+    public void Die()
     {
         Debug.Log("Jogador Morreu!");
         gameObject.SetActive(false);
+        uiManager.ShowGameOver();
     }
 
     void RestartScene()
