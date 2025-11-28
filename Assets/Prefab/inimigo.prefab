@@ -175,3 +175,5 @@ MonoBehaviour:
   - {fileID: 0}
   moveSpeed: 2
   damage: 1
+  jumpForce: 4
+  jumpInterval: 2

@@ -13,8 +13,18 @@ public class EnemyPatrol : MonoBehaviour
     [Header("Combate")]
     public int damage = 1;
 
+    [Header("Pulo Automatico")]
+    public float jumpForce = 5f;
+    public float jumpInterval = 3f;
+    private float jumpTimer;
+
     private int currentPointIndex = 0; 
     private bool isFacingRight = true; 
+
+    void Start()
+    {
+        jumpTimer = jumpInterval;
+    }
 
     void Update()
     {
@@ -41,6 +51,17 @@ public class EnemyPatrol : MonoBehaviour
             if (currentPointIndex >= patrolPoints.Length)
             {
                 currentPointIndex = 0;
+            }
+        }
+
+        jumpTimer -= Time.deltaTime;
+
+        if (jumpTimer <= 0)
+        {
+            if (Mathf.Abs(rb.linearVelocity.y) < 0.001f)
+            {
+                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                jumpTimer = jumpInterval; 
             }
         }
     }
