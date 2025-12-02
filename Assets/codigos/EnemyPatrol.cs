@@ -13,63 +13,50 @@ public class EnemyPatrol : MonoBehaviour
     [Header("Combate")]
     public int damage = 1;
 
-    [Header("Pulo Automatico")]
-    public float jumpForce = 5f;
-    public float jumpInterval = 3f;
-    private float jumpTimer;
-
     private int currentPointIndex = 0; 
     private bool isFacingRight = true; 
 
     void Start()
     {
-        jumpTimer = jumpInterval;
+        rb.freezeRotation = true;
     }
 
     void Update()
     {
-        Transform targetPoint = patrolPoints[currentPointIndex];
-        Vector2 targetPosition = new Vector2(targetPoint.position.x, transform.position.y);
+        MoveTowardsWaypoint();
 
-        transform.position = Vector2.MoveTowards(transform.position, 
-                                                targetPosition, 
-                                                moveSpeed * Time.deltaTime);
-
-        if (transform.position.x < targetPoint.position.x && !isFacingRight)
-        {
-            Flip();
-        }
-        else if (transform.position.x > targetPoint.position.x && isFacingRight)
-        {
-            Flip();
-        }
-
-        if (Mathf.Abs(transform.position.x - targetPoint.position.x) < 0.1f)
+        if (Vector2.Distance(transform.position, patrolPoints[currentPointIndex].position) < 0.5f)
         {
             currentPointIndex++;
-
             if (currentPointIndex >= patrolPoints.Length)
             {
                 currentPointIndex = 0;
             }
         }
+    }
 
-        jumpTimer -= Time.deltaTime;
+    void MoveTowardsWaypoint()
+    {
+        if (patrolPoints.Length == 0) return;
 
-        if (jumpTimer <= 0)
-        {
-            if (Mathf.Abs(rb.linearVelocity.y) < 0.001f)
-            {
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                jumpTimer = jumpInterval; 
-            }
-        }
+        Vector2 targetPosition = patrolPoints[currentPointIndex].position;
+        
+        float direction = (targetPosition.x > transform.position.x) ? 1f : -1f;
+
+        rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
+
+        if (direction > 0 && !isFacingRight) Flip();
+        else if (direction < 0 && isFacingRight) Flip();
+    }
+
+    public void Jump(float jumpForce)
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
     }
 
     private void Flip()
     {
         isFacingRight = !isFacingRight;
-        
         Vector3 localScale = transform.localScale;
         localScale.x *= -1f;
         transform.localScale = localScale;
@@ -89,7 +76,6 @@ public class EnemyPatrol : MonoBehaviour
 
     public void Die()
     {
-        Debug.Log("Inimigo foi derrotado!");
         Destroy(gameObject);
     }
 }
