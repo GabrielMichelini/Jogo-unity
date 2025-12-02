@@ -2,19 +2,22 @@ using UnityEngine;
 
 public class AttackHitbox : MonoBehaviour
 {
-    
+    public int damageAmount = 1; 
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-       
-        if (other.CompareTag("Enemy"))
+        
+        BossHealth boss = other.GetComponent<BossHealth>();
+        if (boss != null)
         {
-           
-            EnemyPatrol enemy = other.GetComponent<EnemyPatrol>();
-           
-            if (enemy != null)
-            {
-                enemy.Die();
-            }
+            boss.TakeDamage(damageAmount);
+            return; 
+        }
+
+      EnemyPatrol enemy = other.GetComponent<EnemyPatrol>();
+        if (enemy != null)
+        {
+            enemy.Die(); 
         }
     }
 }
