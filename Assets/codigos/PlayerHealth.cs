@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI; 
+using System.Collections; // Necessário para o efeito de piscar
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class PlayerHealth : MonoBehaviour
     public float knockbackForceX = 5f;
     public float knockbackForceY = 5f;
 
+    [Header("Efeito de Dano")]
+    public SpriteRenderer spriteRenderer;
+    public Color damageColor = Color.red;
+
     [Header("UI da Vida")]
     public Image[] hearts;
     public Sprite fullHeart;
@@ -24,6 +29,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         UpdateHealthUI();
+
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
     }
 
     public void TakeDamage(int damageAmount, Transform attacker)
@@ -32,6 +42,7 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Jogador tomou dano! Vida atual: " + currentHealth);
 
         UpdateHealthUI();
+        StartCoroutine(FlashDamage());
 
         int direction;
         if (transform.position.x < attacker.position.x)
@@ -49,6 +60,16 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+        }
+    }
+
+    IEnumerator FlashDamage()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = damageColor;
+            yield return new WaitForSeconds(0.3f);
+            spriteRenderer.color = Color.white;
         }
     }
 
