@@ -12,6 +12,9 @@ public class BossHealth : MonoBehaviour
     public SpriteRenderer spriteRenderer; 
     public Color damageColor = Color.red; 
 
+    [Header("UI")]
+    public UIManager uiManager; // Referência para chamar a vitória
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -20,16 +23,17 @@ public class BossHealth : MonoBehaviour
         {
             healthBar.maxValue = maxHealth;
             healthBar.value = currentHealth;
-            
-          
             healthBar.gameObject.SetActive(false);
         }
 
         if (spriteRenderer == null) 
              spriteRenderer = GetComponent<SpriteRenderer>();
+             
+        // Tenta achar o UIManager automaticamente se você esquecer de arrastar
+        if (uiManager == null)
+            uiManager = FindObjectOfType<UIManager>();
     }
 
-    
     public void ShowHealthBar()
     {
         if (healthBar != null)
@@ -67,7 +71,12 @@ public class BossHealth : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("BOSS DERROTADO!");
+      
+        if (uiManager != null)
+        {
+            uiManager.ShowVictory();
+        }
+
         Destroy(gameObject); 
         
         if (healthBar != null) healthBar.gameObject.SetActive(false);

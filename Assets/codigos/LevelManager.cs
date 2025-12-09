@@ -6,7 +6,7 @@ public class LevelManager : MonoBehaviour
     public Transform victoryArea; 
 
     [Header("UI")]
-    public CoinHudController coinHud;
+    public CoinHudController coinHud; // Arraste sua HUD aqui
 
     private int totalCoinsInLevel;
     private int coinsCollected = 0;
@@ -15,19 +15,30 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<PlayerHealth>().gameObject;
+        
+        
         totalCoinsInLevel = GameObject.FindGameObjectsWithTag("colector").Length;
         Debug.Log("Este nível tem " + totalCoinsInLevel + " moedas.");
 
-        coinHud.AtualizarContagem(0, totalCoinsInLevel);
+       
+        if (coinHud != null)
+        {
+            coinHud.AtualizarContagem(0, totalCoinsInLevel);
+        }
     }
 
     public void OnCoinCollected()
     {
         coinsCollected++;
-        Debug.Log("Moedas coletadas: " + coinsCollected);
+        Debug.Log("Moedas coletadas: " + coinsCollected); 
 
-        coinHud.AtualizarContagem(coinsCollected, totalCoinsInLevel);
+       
+        if (coinHud != null)
+        {
+            coinHud.AtualizarContagem(coinsCollected, totalCoinsInLevel);
+        }
 
+        
         if (coinsCollected >= totalCoinsInLevel)
         {
             TeleportPlayerToVictory();
@@ -36,14 +47,20 @@ public class LevelManager : MonoBehaviour
 
     void TeleportPlayerToVictory()
     {
-        Debug.Log("VITÓRIA! Todas as moedas foram coletadas. Teleportando...");
+        Debug.Log("VITÓRIA! ");
 
-        Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
-        if (playerRb != null)
+        if (victoryArea != null)
         {
-            playerRb.linearVelocity = Vector2.zero;
-        }
+           
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        player.transform.position = victoryArea.position;
+           
+            player.transform.position = victoryArea.position;
+        }
+        else
+        {
+            Debug.LogError("ERRO: Você esqueceu de arrastar a Victory Area no LevelManager!");
+        }
     }
 }
