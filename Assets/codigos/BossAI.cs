@@ -19,7 +19,7 @@ public class BossAI : MonoBehaviour
     public GameObject lightningPrefab; 
     public float jumpForce = 15000f; 
     public int lightningCount = 5; 
-    public float lightningDelay = 0.6f; // Tempo para o jogador desviar
+    public float lightningDelay = 0.6f;
 
     private float lastAttackTime;
     private bool isFacingRight = true;
@@ -123,7 +123,15 @@ public class BossAI : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
 
+        // Tempo no ar
         yield return new WaitForSeconds(1.0f); 
+
+        // --- AQUI ACONTECE O TREMOR AO CAIR ---
+        if (CameraShake.instance != null)
+        {
+            // (Duração: 0.5s, Força: 0.5f) - Ajuste a força se quiser mais forte
+            CameraShake.instance.Shake(0.5f, 0.5f);
+        }
 
         SpawnLightning();
 
@@ -141,11 +149,8 @@ public class BossAI : MonoBehaviour
 
         Debug.Log("BOSS: TRAVANDO MIRA NO JOGADOR...");
 
-        // 1. INICIA O RAIO MIRA (NO JOGADOR)
-        // Passa a posição ATUAL do jogador para a corrotina
         StartCoroutine(SpawnDelayedLightning(player.position));
 
-        // 2. RAIOS ALEATÓRIOS (CAEM NA HORA)
         for (int i = 0; i < lightningCount; i++)
         {
             float randomX = Random.Range(-5f, 5f);
@@ -154,14 +159,9 @@ public class BossAI : MonoBehaviour
         }
     }
 
-    // --- NOVA FUNÇÃO: ESPERA ANTES DE CRIAR O RAIO ---
     IEnumerator SpawnDelayedLightning(Vector3 targetPosition)
     {
-        // Espera o tempo configurado (ex: 0.6 segundos)
-        // Durante esse tempo, o jogador deve sair da posição 'targetPosition'
         yield return new WaitForSeconds(lightningDelay);
-
-        // Cria o raio onde o jogador ESTAVA (não onde ele está agora)
         Instantiate(lightningPrefab, targetPosition, Quaternion.identity);
     }
 

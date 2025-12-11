@@ -339,7 +339,7 @@ Transform:
   m_GameObject: {fileID: 42523877}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -102.45636, y: 20.1, z: -10}
+  m_LocalPosition: {x: -102.449646, y: 20.1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2125,7 +2125,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -102.45636, y: 20.1, z: -10}
+  m_LocalPosition: {x: -102.449646, y: 20.1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3411,7 +3411,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 8793639957104055765, guid: a4e646a5efdbadb44b70ec86ffa96fbb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -3454,16 +3454,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossAI
   player: {fileID: 1376754547}
   animator: {fileID: 956748868}
-  speed: 3
-  chaseRange: 10
-  attackRange: 2.5
+  speed: 5
+  chaseRange: 11
+  attackRange: 3
   damage: 1
   attackCooldown: 1.5
   damageDelay: 0.8
   lightningPrefab: {fileID: 9027094873509108715, guid: f21df9cdcd3f09f4082e08a4326a8e49, type: 3}
   jumpForce: 15000
-  lightningCount: 4
-  lightningDelay: 0.16
+  lightningCount: 5
+  lightningDelay: 0.13
 --- !u!61 &956748872
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3522,8 +3522,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c733891a8325b7049ad7ac5b739f1891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossHealth
-  maxHealth: 10
-  currentHealth: 10
+  maxHealth: 15
+  currentHealth: 15
   healthBar: {fileID: 1521837784}
   spriteRenderer: {fileID: 0}
   damageColor: {r: 1, g: 0, b: 0, a: 1}
@@ -5205,7 +5205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::controlePersonagem
   moveSpeed: 10
-  jumpForce: 10
+  jumpForce: 8
   groundCheck: {fileID: 681666577}
   groundLayer:
     serializedVersion: 2

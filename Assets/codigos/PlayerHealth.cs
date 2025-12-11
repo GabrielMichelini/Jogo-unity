@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI; 
-using System.Collections; // Necessário para o efeito de piscar
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -39,10 +39,14 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damageAmount, Transform attacker)
     {
         currentHealth -= damageAmount;
-        Debug.Log("Jogador tomou dano! Vida atual: " + currentHealth);
 
         UpdateHealthUI();
         StartCoroutine(FlashDamage());
+
+        if (CameraShake.instance != null) 
+        {
+             CameraShake.instance.Shake(0.3f, 0.2f); 
+        }
 
         int direction;
         if (transform.position.x < attacker.position.x)
@@ -68,16 +72,15 @@ public class PlayerHealth : MonoBehaviour
         if (spriteRenderer != null)
         {
             spriteRenderer.color = damageColor;
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
             spriteRenderer.color = Color.white;
         }
     }
 
     public void Die()
     {
-        Debug.Log("Jogador Morreu!");
         gameObject.SetActive(false);
-        uiManager.ShowGameOver();
+        if(uiManager != null) uiManager.ShowGameOver();
     }
 
     public bool Heal(int healAmount)
@@ -96,11 +99,6 @@ public class PlayerHealth : MonoBehaviour
 
         UpdateHealthUI();
         return true;
-    }
-
-    void RestartScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void UpdateHealthUI()

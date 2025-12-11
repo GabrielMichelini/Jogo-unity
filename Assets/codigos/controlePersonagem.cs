@@ -6,7 +6,11 @@ public class controlePersonagem : MonoBehaviour
     private Rigidbody2D rb2d;
     public float moveSpeed = 5f;
     private float moveX;
+    
+    [Header("Pulo")]
     public float jumpForce = 10f;
+    public int extraJumps = 1; // 1 = Pulo Duplo, 2 = Triplo, etc.
+    private int jumpCounter;   // Contador interno
     
     public Transform groundCheck;
     public LayerMask groundLayer;
@@ -15,6 +19,7 @@ public class controlePersonagem : MonoBehaviour
     private int movendohash = Animator.StringToHash("IsRunning");
     private Animator animator;
 
+    [Header("Dash")]
     private bool canDash = true;
     private bool isDashing;
     private float dashingPower = 7f;
@@ -31,6 +36,7 @@ public class controlePersonagem : MonoBehaviour
     {
         rb2d = this.GetComponent<Rigidbody2D>();
         animator = this.GetComponent<Animator>();
+        jumpCounter = extraJumps; // Inicializa o contador
     }
 
     void Update()
@@ -43,10 +49,30 @@ public class controlePersonagem : MonoBehaviour
         moveX = Input.GetAxisRaw("Horizontal");
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        // --- LÓGICA DO PULO DUPLO ---
+        
+        // Se encostar no chão, reseta os pulos extras
+        if (isGrounded)
         {
-            Jump();
+            jumpCounter = extraJumps;
         }
+
+        // Verifica o input de pulo
+        if (Input.GetButtonDown("Jump"))
+        {
+            // Se estiver no chão, pula normal
+            if (isGrounded)
+            {
+                Jump();
+            }
+            // Se NÃO estiver no chão, mas ainda tiver pulos extras
+            else if (jumpCounter > 0)
+            {
+                Jump();
+                jumpCounter--; // Gasta um pulo
+            }
+        }
+        // -----------------------------
 
         if (hasAttacked)
         {
@@ -100,6 +126,8 @@ public class controlePersonagem : MonoBehaviour
 
     void Jump()
     {
+        // Zera a velocidade Y antes de pular para o pulo duplo ser consistente
+        rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, 0); 
         rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, jumpForce); 
     }
 
