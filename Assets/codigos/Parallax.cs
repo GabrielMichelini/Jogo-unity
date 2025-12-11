@@ -4,7 +4,7 @@ public class Parallax : MonoBehaviour
 {
     [Header("Parallax Settings")]
     public float parallaxEffect = 0.5f; 
-    public bool infiniteScrolling = true; 
+    public bool infiniteScrolling = true;   
     private Transform cameraTransform;
     private Vector3 lastCameraPosition;
     private float textureUnitSize;

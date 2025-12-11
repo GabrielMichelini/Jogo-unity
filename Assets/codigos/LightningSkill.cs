@@ -18,8 +18,7 @@ public class LightningSkill : MonoBehaviour
             if (player != null)
             {
                 player.TakeDamage(damage, transform);
-                // Opcional: Destruir o raio ao tocar no player
-                // Destroy(gameObject); 
+               
             }
         }
     }
