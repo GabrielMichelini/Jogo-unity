@@ -7,16 +7,20 @@ public class controlePersonagem : MonoBehaviour
     public float moveSpeed = 5f;
     private float moveX;
     
+    [Header("Sons")]
+    public AudioClip jumpSound;
+    public AudioClip attackSound;
+    public AudioClip runSound;
+    private AudioSource audioSource;
+
     [Header("Pulo")]
     public float jumpForce = 10f;
-    public int extraJumps = 1; // 1 = Pulo Duplo, 2 = Triplo, etc.
-    private int jumpCounter;   // Contador interno
+    public int extraJumps = 1; 
+    private int jumpCounter;   
     
     public Transform groundCheck;
     public LayerMask groundLayer;
     private bool isGrounded;
-    private int pulandohash = Animator.StringToHash("IsJumping");
-    private int movendohash = Animator.StringToHash("IsRunning");
     private Animator animator;
 
     [Header("Dash")]
@@ -34,45 +38,54 @@ public class controlePersonagem : MonoBehaviour
     
     void Start()
     {
-        rb2d = this.GetComponent<Rigidbody2D>();
-        animator = this.GetComponent<Animator>();
-        jumpCounter = extraJumps; // Inicializa o contador
+        rb2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+        jumpCounter = extraJumps; 
     }
 
     void Update()
     {
-        if (isDashing)
-        {
-            return;
-        }
+        if (isDashing) return;
 
         moveX = Input.GetAxisRaw("Horizontal");
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
 
-        // --- LÓGICA DO PULO DUPLO ---
-        
-        // Se encostar no chão, reseta os pulos extras
+        // --- SOM DE CORRER ---
+        if (isGrounded && moveX != 0)
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.clip = runSound;
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            if (audioSource.clip == runSound && audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+        }
+        // ---------------------
+
         if (isGrounded)
         {
             jumpCounter = extraJumps;
         }
 
-        // Verifica o input de pulo
         if (Input.GetButtonDown("Jump"))
         {
-            // Se estiver no chão, pula normal
             if (isGrounded)
             {
                 Jump();
             }
-            // Se NÃO estiver no chão, mas ainda tiver pulos extras
             else if (jumpCounter > 0)
             {
                 Jump();
-                jumpCounter--; // Gasta um pulo
+                jumpCounter--; 
             }
         }
-        // -----------------------------
 
         if (hasAttacked)
         {
@@ -94,19 +107,12 @@ public class controlePersonagem : MonoBehaviour
         
         animator.SetFloat("Speed", Mathf.Abs(moveX));
         animator.SetBool("isGrounded", isGrounded);
-        animator.SetFloat("VerticalSpeed", rb2d.linearVelocity.y); 
+        animator.SetFloat("VerticalSpeed", rb2d.velocity.y); 
         animator.SetBool("IsRunning", moveX != 0);       
         animator.SetBool("IsJumping", !isGrounded);
 
-        
-        if (moveX > 0 && !facingRight)
-        {
-            Flip();
-        }
-        else if (moveX < 0 && facingRight)
-        {
-            Flip();
-        }
+        if (moveX > 0 && !facingRight) Flip();
+        else if (moveX < 0 && facingRight) Flip();
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
@@ -120,15 +126,17 @@ public class controlePersonagem : MonoBehaviour
     {
         if (!isDashing)
         {
-            rb2d.linearVelocity = new Vector2(moveX * moveSpeed, rb2d.linearVelocity.y); 
+            rb2d.velocity = new Vector2(moveX * moveSpeed, rb2d.velocity.y); 
         }
     }
 
     void Jump()
     {
-        // Zera a velocidade Y antes de pular para o pulo duplo ser consistente
-        rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, 0); 
-        rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, jumpForce); 
+        rb2d.velocity = new Vector2(rb2d.velocity.x, 0); 
+        rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce); 
+        
+        // Toca o som de pulo
+        if(jumpSound != null) audioSource.PlayOneShot(jumpSound);
     }
 
     void Flip()
@@ -142,6 +150,8 @@ public class controlePersonagem : MonoBehaviour
     void Attack()
     {
         animator.SetTrigger("Attack");
+        // Toca o som de ataque
+        if(attackSound != null) audioSource.PlayOneShot(attackSound);
     }
    
     private IEnumerator Dash()
@@ -151,19 +161,14 @@ public class controlePersonagem : MonoBehaviour
         float originalGravity = rb2d.gravityScale; 
         
         rb2d.gravityScale = 0f; 
-        rb2d.linearVelocity = new Vector2(transform.localScale.x * dashingPower, 0f); 
+        rb2d.velocity = new Vector2(transform.localScale.x * dashingPower, 0f); 
         
-        if (tr != null) 
-        {
-            tr.emitting = true; 
-        }
+        if (tr != null) tr.emitting = true; 
 
         yield return new WaitForSeconds(dashingTime);
 
-        if (tr != null)
-        {
-            tr.emitting = false;
-        }
+        if (tr != null) tr.emitting = false;
+        
         rb2d.gravityScale = originalGravity; 
         isDashing = false;
 

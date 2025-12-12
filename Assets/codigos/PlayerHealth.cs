@@ -1,13 +1,16 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI; 
-using System.Collections; 
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Vida")]
     public int maxHealth = 3; 
     public int currentHealth; 
+
+    [Header("Sons")]
+    public AudioClip hurtSound;
+    private AudioSource audioSource;
 
     [Header("Knockback")]
     public Rigidbody2D rb;
@@ -29,38 +32,32 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth = maxHealth;
         UpdateHealthUI();
+        
+        // Pega o AudioSource (se não tiver no Player, ele tenta achar)
+        audioSource = GetComponent<AudioSource>();
 
-        if (spriteRenderer == null)
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        }
+        if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public void TakeDamage(int damageAmount, Transform attacker)
     {
         currentHealth -= damageAmount;
-        Debug.Log("Jogador tomou dano! Vida atual: " + currentHealth);
+
+        // Toca o som de dano
+        if (hurtSound != null && audioSource != null) 
+             audioSource.PlayOneShot(hurtSound);
 
         UpdateHealthUI();
         StartCoroutine(FlashDamage());
 
-        int direction;
-        if (transform.position.x < attacker.position.x)
-        {
-            direction = -1;
-        }
-        else
-        {
-            direction = 1;
-        }
+        if (CameraShake.instance != null) CameraShake.instance.Shake(0.3f, 0.2f); 
 
-        rb.linearVelocity = Vector2.zero;
+        int direction = (transform.position.x < attacker.position.x) ? -1 : 1;
+
+        rb.velocity = Vector2.zero;
         rb.AddForce(new Vector2(knockbackForceX * direction, knockbackForceY), ForceMode2D.Impulse);
 
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        if (currentHealth <= 0) Die();
     }
 
     IEnumerator FlashDamage()
@@ -68,39 +65,26 @@ public class PlayerHealth : MonoBehaviour
         if (spriteRenderer != null)
         {
             spriteRenderer.color = damageColor;
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
             spriteRenderer.color = Color.white;
         }
     }
 
     public void Die()
     {
-        Debug.Log("Jogador Morreu!");
         gameObject.SetActive(false);
-        uiManager.ShowGameOver();
+        if(uiManager != null) uiManager.ShowGameOver();
     }
 
     public bool Heal(int healAmount)
     {
-        if (currentHealth >= maxHealth)
-        {
-            return false;
-        }
+        if (currentHealth >= maxHealth) return false;
 
         currentHealth += healAmount;
-
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
 
         UpdateHealthUI();
         return true;
-    }
-
-    void RestartScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void UpdateHealthUI()
