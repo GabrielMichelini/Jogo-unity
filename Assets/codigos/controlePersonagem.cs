@@ -107,7 +107,7 @@ public class controlePersonagem : MonoBehaviour
         
         animator.SetFloat("Speed", Mathf.Abs(moveX));
         animator.SetBool("isGrounded", isGrounded);
-        animator.SetFloat("VerticalSpeed", rb2d.velocity.y); 
+        animator.SetFloat("VerticalSpeed", rb2d.linearVelocity.y); 
         animator.SetBool("IsRunning", moveX != 0);       
         animator.SetBool("IsJumping", !isGrounded);
 
@@ -126,14 +126,14 @@ public class controlePersonagem : MonoBehaviour
     {
         if (!isDashing)
         {
-            rb2d.velocity = new Vector2(moveX * moveSpeed, rb2d.velocity.y); 
+            rb2d.linearVelocity = new Vector2(moveX * moveSpeed, rb2d.linearVelocity.y); 
         }
     }
 
     void Jump()
     {
-        rb2d.velocity = new Vector2(rb2d.velocity.x, 0); 
-        rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce); 
+        rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, 0); 
+        rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, jumpForce); 
         
         // Toca o som de pulo
         if(jumpSound != null) audioSource.PlayOneShot(jumpSound);
@@ -161,7 +161,7 @@ public class controlePersonagem : MonoBehaviour
         float originalGravity = rb2d.gravityScale; 
         
         rb2d.gravityScale = 0f; 
-        rb2d.velocity = new Vector2(transform.localScale.x * dashingPower, 0f); 
+        rb2d.linearVelocity = new Vector2(transform.localScale.x * dashingPower, 0f); 
         
         if (tr != null) tr.emitting = true; 
 

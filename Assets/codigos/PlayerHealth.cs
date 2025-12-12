@@ -54,7 +54,7 @@ public class PlayerHealth : MonoBehaviour
 
         int direction = (transform.position.x < attacker.position.x) ? -1 : 1;
 
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         rb.AddForce(new Vector2(knockbackForceX * direction, knockbackForceY), ForceMode2D.Impulse);
 
         if (currentHealth <= 0) Die();
