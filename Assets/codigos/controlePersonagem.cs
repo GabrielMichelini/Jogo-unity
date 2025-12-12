@@ -7,11 +7,11 @@ public class controlePersonagem : MonoBehaviour
     public float moveSpeed = 5f;
     private float moveX;
     
-    [Header("Sons")]
+    [Header("Sons (Arraste aqui)")]
     public AudioClip jumpSound;
     public AudioClip attackSound;
     public AudioClip runSound;
-    private AudioSource audioSource;
+    private AudioSource audioSource; // O tocador de som
 
     [Header("Pulo")]
     public float jumpForce = 10f;
@@ -40,7 +40,7 @@ public class controlePersonagem : MonoBehaviour
     {
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>(); // Pega o Audio Source do boneco
         jumpCounter = extraJumps; 
     }
 
@@ -51,50 +51,25 @@ public class controlePersonagem : MonoBehaviour
         moveX = Input.GetAxisRaw("Horizontal");
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
 
-        // --- SOM DE CORRER ---
-        if (isGrounded && moveX != 0)
-        {
-            if (!audioSource.isPlaying)
-            {
-                audioSource.clip = runSound;
-                audioSource.Play();
-            }
-        }
-        else
-        {
-            if (audioSource.clip == runSound && audioSource.isPlaying)
-            {
-                audioSource.Stop();
-            }
-        }
-        // ---------------------
-
-        if (isGrounded)
-        {
-            jumpCounter = extraJumps;
-        }
+        // --- PULO ---
+        if (isGrounded) jumpCounter = extraJumps;
 
         if (Input.GetButtonDown("Jump"))
         {
-            if (isGrounded)
-            {
-                Jump();
-            }
+            if (isGrounded) Jump();
             else if (jumpCounter > 0)
             {
                 Jump();
                 jumpCounter--; 
             }
         }
+        // ------------
 
+        // ATAQUE
         if (hasAttacked)
         {
             timer += Time.deltaTime; 
-            if (timer > 1f) 
-            {
-                hasAttacked = false;
-                timer = 0; 
-            }
+            if (timer > 1f) { hasAttacked = false; timer = 0; }
         }
         else
         {
@@ -105,6 +80,7 @@ public class controlePersonagem : MonoBehaviour
             }
         }
         
+        // ANIMAÇÕES
         animator.SetFloat("Speed", Mathf.Abs(moveX));
         animator.SetBool("isGrounded", isGrounded);
         animator.SetFloat("VerticalSpeed", rb2d.linearVelocity.y); 
@@ -114,29 +90,23 @@ public class controlePersonagem : MonoBehaviour
         if (moveX > 0 && !facingRight) Flip();
         else if (moveX < 0 && facingRight) Flip();
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
-        {
-            StartCoroutine(Dash());
-        }
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash) StartCoroutine(Dash());
 
         Move();
     }
 
     void Move()
     {
-        if (!isDashing)
-        {
-            rb2d.linearVelocity = new Vector2(moveX * moveSpeed, rb2d.linearVelocity.y); 
-        }
+        if (!isDashing) rb2d.linearVelocity = new Vector2(moveX * moveSpeed, rb2d.linearVelocity.y); 
     }
 
     void Jump()
     {
         rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, 0); 
         rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, jumpForce); 
-        
-        // Toca o som de pulo
-        if(jumpSound != null) audioSource.PlayOneShot(jumpSound);
+        // Nota: Tirei o som daqui para você colocar na animação se quiser,
+        // mas para pulo, o ideal é manter aqui:
+        PlayJumpSound(); 
     }
 
     void Flip()
@@ -150,8 +120,7 @@ public class controlePersonagem : MonoBehaviour
     void Attack()
     {
         animator.SetTrigger("Attack");
-        // Toca o som de ataque
-        if(attackSound != null) audioSource.PlayOneShot(attackSound);
+        // O som será chamado pela animação agora!
     }
    
     private IEnumerator Dash()
@@ -159,20 +128,34 @@ public class controlePersonagem : MonoBehaviour
         canDash = false;
         isDashing = true;
         float originalGravity = rb2d.gravityScale; 
-        
         rb2d.gravityScale = 0f; 
         rb2d.linearVelocity = new Vector2(transform.localScale.x * dashingPower, 0f); 
-        
         if (tr != null) tr.emitting = true; 
-
         yield return new WaitForSeconds(dashingTime);
-
         if (tr != null) tr.emitting = false;
-        
         rb2d.gravityScale = originalGravity; 
         isDashing = false;
-
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
+    }
+
+    // --- FUNÇÕES PARA O ANIMATOR CHAMAR ---
+
+    public void PlayRunSound()
+    {
+        // Chama essa função quando o pé tocar no chão na animação
+        if(runSound != null) audioSource.PlayOneShot(runSound);
+    }
+
+    public void PlayAttackSound()
+    {
+        // Chama essa função no momento do corte da espada
+        if(attackSound != null) audioSource.PlayOneShot(attackSound);
+    }
+
+    public void PlayJumpSound()
+    {
+        // Pode ser chamado na animação de pulo (frame 1) ou pelo código
+        if(jumpSound != null) audioSource.PlayOneShot(jumpSound);
     }
 }
